@@ -1,0 +1,171 @@
+\documentclass[11pt, fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{ulem}
+\usepackage{enumitem}
+\usepackage[left=0.75in, right=0.75in, bottom=0.75in]{geometry}
+\usepackage{graphicx}
+% \usepackage{float}
+\usepackage{floatrow}
+
+\usepackage{sectsty}
+\sectionfont{\centering}
+
+\usepackage[perpage]{footmisc}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{190100044 \& 190100055}
+\rhead{CS 215: Assignment 3}
+\renewcommand{\footrulewidth}{1.0pt}
+\cfoot{Page \thepage}
+
+\setlength{\parindent}{0em}
+\renewcommand{\arraystretch}{2}%
+
+\title{Assignment 3: CS 215}
+\author{
+\begin{tabular}{|c|c|}
+     \hline
+     Devansh Jain & Harshit Varma \\
+     \hline
+     190100044 & 190100055 \\
+     \hline
+\end{tabular}
+}
+\date{September 27, 2020}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\thispagestyle{empty}
+\setcounter{page}{0}
+
+
+\newpage
+\section*{Question 1}
+\addcontentsline{toc}{section}{Question 1}
+\setcounter{equation}{0}
+\subsection*{(a)}
+$X_1$ denotes the number of times you have to pick a book to pick $1$ distinct color. \\ $X_1 = 1$ \\
+
+When books with $i-1$ distinct types of colors have been collected, the probability of picking a book with a different color (i.e. different from the previous $i-1$ colors) is $p_i = \frac{n-(i-1)}{n} = \frac{n-i+1}{n}$.
+
+\subsection*{(b)}
+When books with $i-1$ distinct types of colors have been collected, the number of attempts to pick a bool of different color is the random variable $X_i$. \\
+Thus, $X_i$ is a geometric random variable with parameter $p_i = \frac{n-i+1}{n}$
+
+\subsection*{(c)}
+For this subsection, $Z$ is a geometric random variable with parameter $p$. \\
+Probability Mass Function is $P(Z = k) = p (1-p)^{k-1}$ where k = 1, 2, \dots. \\
+We use the Moment Generating function here.
+\begin{equation}
+    \begin{split}
+        MGF = \phi_Z(t) &= \sum_{i=1}^{\infty} e^{ti} p(1-p)^{i-1} \\
+            &= (e^{t} p) \sum_{i=1}^{\infty} [e^t (1-p)]^{i-1} \\
+            &= \frac{e^{t} p}{(1 - e^t(1-p))} \\
+            &= \frac{p}{e^{-t} - 1 + p}
+    \end{split}
+\end{equation}
+
+\begin{equation}
+    \begin{split}
+        & \frac{d}{dt} \phi_Z(t) = \frac{p}{(e^{-t} - 1 + p)^2} (e^{-t}) \\
+        & E(Z) = \frac{d}{dt} \phi_Z(t) \bigg\rvert_{t = 0} = \Aboxed{\frac{1}{p}} \\
+    \end{split}
+\end{equation}
+
+\begin{equation}
+    \begin{split}
+        & \frac{d^2}{d^2t} \phi_Z(t) = \frac{p}{(e^{-t} - 1 + p)^3} (2e^{-t}) \\
+        & E(Z^2) = \frac{d^2}{d^2t} \phi_Z(t) \bigg\rvert_{t = 0} = \frac{2}{p^2} \\
+        & Var(Z) = E(Z^2) - E(Z)^2 = \Aboxed{\frac{1}{p^2}} \\
+    \end{split}
+\end{equation}
+
+\subsection*{(d)}
+$X^{(n)} = \sum_{i=1}^{n} X_i$ where $X_i$ is a geometric random variable with $p_i = \frac{n-i+1}{n}$.
+\begin{equation}
+    \begin{split}
+        E(X^{(n)} &= E(\sum_{i=1}^{n} X_i) \\
+            &= \sum_{i=1}^{n} E(X_i) \\
+            &= \sum_{i=1}^{n} \frac{1}{p_i} \\
+            &= \sum_{i=1}^{n} \frac{n}{n-i+1} \\
+       E(X^{(n)}) &= n \cdot \sum_{i=1}^{n} \frac{1}{n-i+1} \\
+    \end{split}
+\end{equation}
+
+\subsection*{(e)}
+\begin{equation}
+    \begin{split}
+        Var(X^{(n)}) &= Var(\sum_{i=1}^{n} X_i) \\
+            &= \sum_{i=1}^{n} Var(X_i) \\
+            &= \sum_{i=1}^{n} \frac{1}{p_i^2} \\
+            &= \sum_{i=1}^{n} \frac{n^2}{(n-i+1)^2} \\
+            &= n^2 \cdot \sum_{i=1}^{n} \frac{1}{(n-i+1)^2} \\
+            &= n^2 \cdot \sum_{i=1}^{n} \frac{1}{i^2} \quad \le n^2 \cdot \frac{\pi^2}{6} \\
+        Var(X^{(n)}) &\le \frac{\pi^2n^2}{6} \\
+    \end{split}
+\end{equation}
+
+\subsection*{(f)}
+\subsection*{Instructions for running the code:}
+\begin{itemize}
+    \item After extracting submitted file, look for a directory named \texttt{code}.
+    \item Within this, the code for this question is contained in a directory named \texttt{q1}
+    \item Run the file \texttt{q1.m} for plotting the graph of $E(X^{(n)})$ versus $n$.
+    \item \texttt{q1.png} is the plot attached in the report.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{q1.png}
+    \caption{Plot of $E(X^{(n)})$ versus $n$ \& bounding it with $n\  log_2 (n) + 1$ \& $n\ log_e (n) + 1$}
+\end{figure}
+\vspace{3em}
+$E(X^{(n)}) = \Theta(f(n))$ where $f(n) = n\ log(n)$.
+
+
+\newpage
+\section*{Question 2}
+\addcontentsline{toc}{section}{Question 2}
+\setcounter{equation}{0}
+
+
+
+
+
+
+
+
+\newpage
+\section*{Question 3}
+\addcontentsline{toc}{section}{Question 3}
+\setcounter{equation}{0}
+
+
+
+
+
+
+
+
+\newpage
+\section*{Question 4}
+\addcontentsline{toc}{section}{Question 4}
+\setcounter{equation}{0}
+
+
+
+
+
+
+
+
+\end{document}
+
