@@ -23,8 +23,9 @@ a = ret(1,1); % a
 b = ret(2,1); % b
 c = ret(3,1); % c
 
-e = z - a*x - y*b - c; % error values
-sigma = std(e); % sigma
+e = z - a*x - y*b - c; % error values with mu
+variance = sum(e.^2)/len; % Using ML of Gaussian to find variance
+% variance = var(e);
 
-fprintf('Predicted plane equation : %fx + %fy + %f = 0\n', a, b, c);
-fprintf('Standard Deviation : %f', sigma);
+fprintf('Predicted plane equation : z = %fx + %fy + %f\n', a, b, c);
+fprintf('Noise Variance : %f', variance);
