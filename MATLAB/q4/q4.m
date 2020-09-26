@@ -30,6 +30,9 @@ end
 ll_max = max(ll);
 sigma_max = sigmas(ll == ll_max);
 
+% Printing
+fprintf("%.4f\n", sigma_max);
+
 % Plotting
 plot(log(sigmas), ll);
 hold on;
