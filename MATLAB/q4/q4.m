@@ -1,5 +1,6 @@
 clc;
 clear;
+close all;
 
 % Part (a)
 N = 1000;
@@ -66,3 +67,34 @@ xlabel("$x$", "Interpreter", "Latex");
 ylabel("$\hat{p_n}(x; \sigma)$", "Interpreter", "Latex");
 title("$\hat{p_n}(x; \sigma)$ vs x", "Interpreter", "Latex");
 legend("Estimate", "True");
+hold off;
+
+% Part (d)
+p_x = normpdf(V, 0, 4);
+D = zeros(1, length(sigmas));
+for s = 1:length(sigmas)
+    sum_1 = 0;
+    for j = 1:m
+        numerator   = -((T - V(j)).^2);
+        denominator = 2*(sigmas(s)^2);
+        d = (1/(n*sigmas(s)*sqrt(2*pi)))*sum(exp(numerator ./ denominator));
+        sum_1 = sum_1 + (p_x(j) - d).^2;
+    end
+    D(s) = sum_1;
+end
+
+min_D = min(D);
+sigma_best_2 = sigmas(D == min_D);
+
+figure;
+plot(log(sigmas), D);
+hold on;
+point = plot(log(sigma_best_2), min_D, "ro");
+set(point, 'MarkerFaceColor', get(point,'Color')); % fills the dot
+xline(log(sigma_best_2), "--");
+yline(min_D, "--");
+ylim([min(D)-1, max(D)+1]);
+xlabel("$\log(\sigma)$", "Interpreter", "Latex");
+ylabel("D", "Interpreter", "Latex");
+title("D vs $log(\sigma)$", "Interpreter", "Latex");
+hold off;

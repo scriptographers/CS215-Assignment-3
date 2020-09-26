@@ -191,7 +191,7 @@ Taking the $\log$, we obtain the log likelihood:
 \begin{equation}
     \label{logl}
     \begin{split}
-        \boxed{\mathcal{L} = \log{p(\{z_i\}_i;\mathbf{x_i}, \mathbf{a}, b)} = -\frac{1}{{2\sigma^2}}\sum_{i=1}^{N} (z_i - (\mathbf{a}^T\mathbf{x_i} + b))^2 - n\log(\sigma\sqrt{2\pi})}
+        \boxed{\mathcal{L} = \log{p(\{z_i\}_i;\mathbf{x_i}, \mathbf{a}, b)} = -\frac{1}{{2\sigma^2}}\sum_{i=1}^{N} (z_i - (\mathbf{a}^T\mathbf{x_i} + b))^2 - N\log(\sigma\sqrt{2\pi})}
     \end{split}
 \end{equation}
 Next, we compute the partial derivatives of $\mathcal{L}$ w.r.t the parameters and equate them to 0.
@@ -206,7 +206,7 @@ Thus,
         \frac{\partial \mathcal{L}}{\partial \mathbf{a}} = \mathbf{0} \Rightarrow \frac{\partial \mathcal{L}}{\partial a_j} = 0 \ \forall \ j = 1,\ldots,n
     \end{split}
 \end{equation*}
-Note that $i = 1,\ldots,m$ and $j = 1,\ldots,n$\\
+Note that $i = 1,\ldots,N$ and $j = 1,\ldots,n$\\
 \begin{equation*}
     \begin{split}
         \frac{\partial \mathcal{L}}{\partial a_j} = \frac{1}{{\sigma^2}}\sum_{i=1}^{N} (z_i - (\mathbf{a}^T\mathbf{x_i} + b))\frac{\partial (\mathbf{a}^T\mathbf{x_i})}{\partial a_j} = \frac{1}{{\sigma^2}}\sum_{i=1}^{N} (z_i - (\mathbf{a}^T\mathbf{x_i} + b))x_{ij} = 0
@@ -234,7 +234,7 @@ and,
 \end{equation}
 Thus we have $n+1$ equations for $n+1$ variables.
 
-We can condense \eqref{set1} and \eqref{set2} into a single equation in the form of matrix and vectors as:
+We can condense \eqref{set1} and \eqref{set2} into a single equation in the form of matrices and vectors as:
 \begin{equation}
     \sum_{i=1}^{N}
     \begin{bmatrix}
@@ -401,20 +401,65 @@ Output:
     \includegraphics[width=0.8\linewidth, left]{output.jpeg}
 \end{figure}
 \vspace{-1em}
-Thus, the predicted equation of plane is $z = 10x + 20y + 30$ and noise variance is 23.
+Thus, the predicted equation of plane is \boxed{$z = 10x + 20y + 30$} and noise variance is \boxed{23}.
 
 
 \newpage
 \section*{Question 4}
 \addcontentsline{toc}{section}{Question 4}
 \setcounter{equation}{0}
+There are $N\ (=1000)$ samples in our dataset ($X$).\\
+There are $n\ (=750)$ samples in our training set.\\
+There are $m\ (=250)$ samples in our validation set.\\
+Let the training set $T$ be given by $T = \{t_i\}_{i=1}^n$\\
+Let the validation set $V$ be given by $V = \{v_j\}_{j=1}^m$\\
+Also, $T\cap V = \phi$ and $T \cup V = X$\\
+Thus, we have the Gaussian kernel estimator as:\\
+$$
+\hat p_n(x;\sigma) = \frac{1}{n\sigma\sqrt{2\pi}} \sum_{i=1}^{n}\exp\bigg(\frac{-(x - t_i)^2}{2\sigma^2} \bigg)
+$$
+\subsection*{(b)}
+Therefore, the joint likelihood of the samples in $V$, assuming $\{v_j\}_{j=1}^{m}$ to be independent, is:
+$$
+\begin{aligned}
+    f(\{v_j\}_{j=1}^{m}; \sigma) &= \prod_{j=1}^m \hat p_n(v_j;\sigma)\\
+    &= \Aboxed{\bigg(\frac{1}{n\sigma\sqrt{2\pi}}\bigg)^m\cdot \prod_{j=1}^m\Bigg( \sum_{i=1}^{n}\exp\bigg(\frac{-(v_j - t_i)^2}{2\sigma^2} \bigg) \Bigg)}
+\end{aligned}
+$$
+The log-likelihood is given by:
+$$
+\begin{aligned}
+    \log f(\{v_j\}_{j=1}^{m}; \sigma) &= \sum_{j=1}^m \log (\hat p_n(v_j;\sigma))\\
+    &= \Aboxed{\sum_{j=1}^m \log \bigg(\sum_{i=1}^{n}\exp\bigg(\frac{-(v_j - t_i)^2}{2\sigma^2} \bigg)\bigg) - m\log(n\sigma\sqrt{2\pi})}
+\end{aligned}
+$$
+\subsection*{(c)}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{q4ci.jpg}
+    \caption{$\log f(\{v_j\}_{j=1}^{m}; \sigma)$ vs $\log(\sigma)$}
+    \label{fig:my_label}
+\end{figure}
 
+$\boxed{\sigma = 1 }$ yields the maximum value of the log-likelihood.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{q4cii.jpg}
+    \caption{True PDF overlaid on the estimated PDF}
+    \label{fig:my_label}
+\end{figure}
+\newpage
 
-
-
-
-
+\subsection*{(d)}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{q4di.jpg}
+    \caption{D vs $\log(\sigma)$}
+    \label{fig:my_label}
+\end{figure}
+$\boxed{ \sigma = 1 }$ yields the minimum value of $D$.\\
+\\
+$\boxed{D = 0.0061}$ for the $\sigma$ parameter that yielded the best LL.
 
 \end{document}
-
