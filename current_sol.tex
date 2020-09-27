@@ -54,6 +54,7 @@
 \section*{Question 1}
 \addcontentsline{toc}{section}{Question 1}
 \setcounter{equation}{0}
+\setcounter{figure}{0}
 \subsection*{(a)}
 $X_1$ denotes the number of times you have to pick a book to pick $1$ distinct color. \\ 
 \boxed{X_1 = 1} (since any book you pick at the start will increment the total number of distinct books by $1$) \\
@@ -149,6 +150,7 @@ $$\boxed{E(X^{(n)}) = \Theta(f(n))$ where $f(n) = n\ log(n)}$$
 \section*{Question 2}
 \addcontentsline{toc}{section}{Question 2}
 \setcounter{equation}{0}
+\setcounter{figure}{0}
 
 \subsection*{(a)}
 Let $U$ be a random variable distributed as a $[0,1]$ uniform distribution, thus $\{u_i\}^{n}_{i=1}$ follows the same distribution as $U$\\
@@ -159,17 +161,78 @@ Thus,
 \end{equation}
 
 Let $V$ be a random variable such that $V = F^{-1}(U)$, thus $\{v_i\}^{n}_{i=1}$ follows the same distribution as $V$  \\
-Thus PMF for $V$ is,
+Thus CDF for $V$ is,
 $$
 \begin{aligned}
     P(V \le x) &= P(F^{-1}(U) \le x)\\
     &= P(U \le F(x)) \hspace{1em} \text{(Since $F$ is invertible and increasing)}\\
-    &= F(x) \hspace{2em} \text{(Using (\ref{eq:uniform}))}
+    &= F(x) \hspace{4.75em} \text{(Using (\ref{eq:uniform}))}
 \end{aligned}
 $$
 Thus, $V$ is distributed as $F$.
+\subsection*{(b)}
+Let $U(y)$ denote the CDF for a $[0, 1]$ uniform distribution, thus $U(y) = y\  \forall y\in[0,1]$\\
+Let $U_e(y) = \frac{\sum_{i=1}^n\mathbf{1}(U_i \le y)}{n} $\\
+Thus, $E = \max_{0\le y\le 1} | U_e(y) - U(y) | = \max_{0\le U(y)\le 1} | U_e(y) - U(y) | $\\
+Also, we have: $F_e(x) = \frac{\sum_{i=1}^n\mathbf{1}(Y_i \le x)}{n} $ and $D = \max_x | F_e(x) - F(x) |$\\
+\textbf{To prove:} $P(D \ge d) = P(E \ge d), \iff P(D \le d) = P(E\le d)$\\
+$$
+\begin{aligned}
+    %P(D \le d) &= P(\max{}_x | F_e(x) - F(x) | \le d)\\
+    %&= P(| F_e(x) - F(x) | \le d) \ \forall \ x\in\mathbb{R}\\
+    P(E \le d) &= P(\max{}_y | U_e(y) - U(y) | \le d)\\
+    &= P(| U_e(y) - U(y) | \le d) \ \forall \ y\in [0, 1]
+\end{aligned}
+$$
+Substituting $y = F(x)$, this can be done as both $y$ and $F(x)$ lie in $[0, 1]$ and as $F$ is continuous, it must take all values from $[0, 1]$, i.e Im($F$)=$[0, 1]$.
+$$
+\begin{aligned}
+    P(D \le d) &= P(\max{}_x | F_e(x) - F(x) | \le d)\\
+    &= P(| F_e(x) - F(x) | \le d) \ \forall \ x\in\mathbb{R}\\
+    \text{ and }\\
+    P(E \le d) &= P(\max{}_{F(x)} | U_e(F(x)) - U(F(x)) | \le d)\\
+    &= P(| U_e(F(x)) - F(x) | \le d) \ \forall \ F(x)\in [0, 1]
+\end{aligned}
+$$
+Now,
+$$
+\begin{aligned}
+   U_e(F(x)) &=  \frac{\sum_{i=1}^n\mathbf{1}(U_i \le F(x))}{n}\\
+   &= \frac{\sum_{i=1}^n\mathbf{1}(F^{-1}(U_i) \le x)}{n} \hspace{3em} \text{(Assuming F to be invertible\footnotemark)}\\
+   &= \frac{\sum_{i=1}^n\mathbf{1}(Y_i \le x)}{n} = F_e(x) \hspace{2em} \text{(Using the results of part (a))}
+\end{aligned}
+$$
+Thus, we get $P(E \le d) = P(| F_e(x) - F(x) | \le d) \ \forall \ F(x)\in [0, 1] = P(\max{}_{0\le F(x) \le 1} | F_e(x) - F(x) | \le d)$\\
+Note that $\max{}_{0\le F(x) \le 1} | F_e(x) - F(x) | = \max{}_x | F_e(x) - F(x) | = D$, thus we get $P(E \le d) = P(D \le d)$. \\
+\footnotetext{We had asked sir if can use this assumption and he had said it is ok.}
+
+\subsection*{Practical Significance:}
+% What we are essentially doing in  part (a), is ``\textbf{\textit{Inverse Transform sampling}}". \\
+
+% For choosing $n$ random values $\{v_i\}_{i=1}^{n}$ from any distribution $F$ is equivalent of choosing $n$ random values $\{u_i\}_{i=1}^{n}$ from the uniform distribution (which is easy and the existing algorithm is highly optimized) and then applying inverse of the distribution function $F$ (apply $F^{-1}$)to random values $\{u_i\}_{i=1}^{n}$ to get $\{v_i\}_{i=1}^{n}$. \\
+
+The random variable D measures the maximum absolute deviation of the empirical distribution (with $n$ samples) from the true distribution for an arbitrary continuous distribution $F$.\\
+The random variable E measures the maximum absolute deviation of the empirical distribution (with $n$ samples) from the true distribution for the $[0, 1$] uniform distribution.\\
+From the above, we can conclude that the distribution of \textit{the maximum absolute deviation of empirical distribution from true distribution} is the same (as that of an $[0, 1]$ uniform distribution with the same number of samples) irrespective of the distribution, as long as the CDF for the distribution is continuous.\\
+Thus, for two arbitrary continuous distributions $F_1(x)$ and $F_2(x)$, we have:
+$$
+\begin{aligned}
+    P(\max{}_x | F_{e_1}(x) - F_1(x) | \ge d) &= P(\max{}_{0\le y\le 1} | U_e(y) - U(y) | \ge d)\\
+    P(\max{}_x | F_{e_2}(x) - F_2(x) | \ge d) &= P(\max{}_{0\le y\le 1} | U_e(y) - U(y) | \ge d)\\
+    \text{Thus, }\\
+    P(\max{}_x | F_{e_1}(x) - F_1(x) | \ge d) &= P(\max{}_x | F_{e_2}(x) - F_2(x) | \ge d)
+\end{aligned}
+$$
+Thus, as a corollary of the proven result in part (b) we have shown that for any two arbitrary distributions having continuous CDFs, their maximum absolute deviation of empirical distribution from true distribution will be distributed identically.
 
 
+% In part (a), we had proved that $\{v_i\}_{i=1}^{n}$ would follow the distribution F. \\
+% From part (b),\\
+% $P(E \le d) = P(D \le d) \implies P(\max_x | F_e(x) - F(x) | \le d) = P(\max_{0\le y\le 1} | U_e(y) - U(y) | \le d)$\\
+% In other words, we can be sure with probability $P(\max_{0\le y\le 1} | U_e(y) - U(y) | \le d)$ that the absolute deviation of the empirical distribution from true distribution would be less than $d$ for all values, for any continuous distribution F.\\
+% This totally justifies this method which is significantly faster and easier. \\
+% This method is applied to get random values from almost all distribution including Gaussian distribution. \\
+% This can actually be extended to all distribution even discrete (we had used this technique in previous homework assignments) but the proof would be more consuming. \\
 
 
 
@@ -177,6 +240,7 @@ Thus, $V$ is distributed as $F$.
 \section*{Question 3}
 \addcontentsline{toc}{section}{Question 3}
 \setcounter{equation}{0}
+\setcounter{figure}{0}
 We shall try proving a much more general result for an hyperplane in $n$ dimensional space.\\
 Let the equation characterizing the hyperplane $z$ be written as $a_1x_1 + a_2x_2 + \ldots + a_nx_n + b + \varepsilon $\\
 Representing in vector form, $z = \mathbf{a}^T\mathbf{x} + b + \varepsilon$ where $\mathbf{a} = [a_1 \ldots a_n]^T \in \mathbb{R}^n$, $\mathbf{x} = [x_1 \ldots x_n]^T \in \mathbb{R}^n$ and $b \in \mathbb{R}$ and $\varepsilon$ is the gaussian noise.\\
@@ -290,7 +354,7 @@ Next, we compute the partial derivatives of $\mathcal{L}$ w.r.t the parameters (
         \frac{\partial \mathcal{L}}{\partial c} &= \frac{1}{{\sigma^2}}\sum_{i=1}^{N} (z_i - (ax_i + by_i + c)) = 0 \Longrightarrow \sum_{i=1}^{N} z_i = \sum_{i=1}^{N} (ax_i + by_i + c)) \\
     \end{split}
 \end{equation*}
-Matrix form:
+Matrix and vector form:
 \begin{equation}
     \sum_{i=1}^{N}
     \begin{bmatrix}
@@ -338,7 +402,7 @@ Thus the likelihood $p(\{z_i\}_i; \{x_i\}, a_1, a_2, a_3, a_4, a_5, a_6)$ is giv
 \end{equation*}
 Taking the $\log$, we obtain the log likelihood:
 \begin{equation}
-    \label{logl1}
+    \label{logl2}
     \begin{split}
         \boxed{\mathcal{L} = \log{p(\{z_i\}; \{x_i\}, \{y_i\}, a_1, a_2, a_3, a_4, a_5, a_6)} = - n\log(\sigma\sqrt{2\pi}) -\frac{1}{{2\sigma^2}}\sum_{i=1}^{N} (z_i - (f(x_i,y_i))^2 }
     \end{split}
@@ -354,7 +418,7 @@ Next, we compute the partial derivatives of $\mathcal{L}$ w.r.t the parameters a
         \frac{\partial \mathcal{L}}{\partial a_6} &= \frac{1}{{\sigma^2}}\sum_{i=1}^{N} (z_i - f(x_i,y_i)) = 0 \Longrightarrow \sum_{i=1}^{N} z_i = \sum_{i=1}^{N} (a_1 x_i^2 + a_2 y_i^2 + a_3 x_iy_i + a_4 x_i + a_5 y_i + a_6)\\
     \end{split}
 \end{equation*}
-Matrix form:
+Matrix and vector form:
 \begin{equation}
     \sum_{i=1}^{N}
     \begin{bmatrix}
@@ -409,21 +473,23 @@ Thus, the predicted equation of plane is \boxed{$z = 10x + 20y + 30$} and noise 
 \section*{Question 4}
 \addcontentsline{toc}{section}{Question 4}
 \setcounter{equation}{0}
+\setcounter{figure}{0}
 \subsection*{Instructions for running the code:}
 \begin{itemize}[itemsep=-0.6ex]
     \item After extracting submitted file, look for a directory named \texttt{code}
     \item Within this, the code for this question is contained in a directory named \texttt{q4}
     \item Run the file \texttt{q4.m}, this generates the 4 required plots and prints out the values asked for
+    \item Note: \texttt{q4\_v\_equal\_t.m} generates the plots for part (e)
 \end{itemize}
 \hrule
 \vspace{15pt}
-There are $N\ (=1000)$ samples in our dataset ($X$).\\
-There are $n\ (=750)$ samples in our training set.\\
-There are $m\ (=250)$ samples in our validation set.\\
-Let the training set $T$ be given by $T = \{t_i\}_{i=1}^n$\\
-Let the validation set $V$ be given by $V = \{v_j\}_{j=1}^m$\\
-Also, $T\cap V = \phi$ and $T \cup V = X$\\
-Thus, we have the Gaussian kernel estimator as:\\
+There are $N\ (=1000)$ samples in our dataset ($X$). \\
+There are $n\ (=750)$ samples in our training set. \\
+There are $m\ (=250)$ samples in our validation set. \\
+Let the training set $T$ be given by $T = \{t_i\}_{i=1}^n$ \\
+Let the validation set $V$ be given by $V = \{v_j\}_{j=1}^m$ \\
+Also, $T\cap V = \phi$ and $T \cup V = X$ \\
+Thus, we have the Gaussian kernel estimator as: \\
 $$
 \hat p_n(x;\sigma) = \frac{1}{n\sigma\sqrt{2\pi}} \sum_{i=1}^{n}\exp\bigg(\frac{-(x - t_i)^2}{2\sigma^2} \bigg)
 $$
@@ -447,7 +513,7 @@ $$
     \centering
     \includegraphics[scale=0.4]{q4ci.jpg}
     \caption{$\log f(\{v_j\}_{j=1}^{m}; \sigma)$ vs $\log(\sigma)$}
-    \label{fig:my_label}
+    \label{fig:q4ci}
 \end{figure}
 
 $\boxed{\sigma = 1 }$ yields the maximum value of the log-likelihood.
@@ -456,7 +522,7 @@ $\boxed{\sigma = 1 }$ yields the maximum value of the log-likelihood.
     \centering
     \includegraphics[scale=0.4]{q4cii.jpg}
     \caption{True PDF overlaid on the estimated PDF}
-    \label{fig:my_label}
+    \label{fig:q4cii}
 \end{figure}
 \newpage
 
@@ -465,14 +531,14 @@ $\boxed{\sigma = 1 }$ yields the maximum value of the log-likelihood.
     \centering
     \includegraphics[scale=0.41]{q4di.jpg}
     \caption{D vs $\log(\sigma)$}
-    \label{fig:my_label}
+    \label{fig:q4di}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.41]{q4dii.jpg}
     \caption{True PDF overlaid on the estimated PDF}
-    \label{fig:my_label}
+    \label{fig:q4dii}
 \end{figure}
 \newpage
 
@@ -483,5 +549,37 @@ $\boxed{\sigma = 1 }$ yields the maximum value of the log-likelihood.
 \end{verbatim}
 
 \subsection*{(e)}
+Let $V = T$, thus, $m = n$\\
+The new log-likelihood is given by:
+$$
+\begin{aligned}
+    \mathcal{L} = \log f(\{t_j\}_{j=1}^{n}; \sigma) &= \sum_{j=1}^n \log \bigg(\sum_{i=1}^{n}\exp\bigg(\frac{-(t_j - t_i)^2}{2\sigma^2} \bigg)\bigg) - n\log(n\sigma\sqrt{2\pi})
+\end{aligned}
+$$
+$$
+\begin{aligned}
+    \frac{\partial\mathcal{L}}{d\sigma} = -\frac{n}{\sigma} + \sum_{j=1}^n \left( \frac{1}{\bigg(\sum_{i=1}^{n}\exp\frac{-(t_j - t_i)^2}{2\sigma^2}\bigg)}\cdot \sum_{i=1}^{n}\Bigg(\frac{(t_j - t_i)}{\sigma^3} \exp\bigg(\frac{-(t_j - t_i)^2}{2\sigma^2}\bigg) \Bigg) \right) < 0
+\end{aligned}
+$$
+
+The log-likelihood comes out to be strictly decreasing as the second term evaluates to $0$ (due to anti-symmetry), thus in the cross-validation procedure, the smallest value of $\sigma$ will be selected as this will maximize the log-likelihood. (Thus, we get wrong $\sigma$ value from the cross-validation procedure)\\
+This corresponds to the \textbf{\textit{undersmoothening}} case.\\
+As $\hat p_n(x;\sigma)$ is constituted by $n$ smaller gaussians (centered at $t_i$s) added together, a small value of $\sigma$ (which in this case also happens to be the variance of the individual gaussians) will lead to each constituent gaussian having a sharper peak at there respective centres ($t_i$s), thus $\hat p_n(x;\sigma)$ will have sharp peaks at the $t_i$ values (can be seen in the plot obtained by taking the $\sigma$ returned by the cross-validation procedure - Fig. \ref{fig:q4d_extra1})\\
+Therefore, if we used this $\hat p_n(x;\sigma)$, cross-validated as well as trained on $T$, our results won't generalize well on an unseen sample.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{q4d_extra2.jpg}
+    \caption{$\log f(\{v_j\}_{j=1}^{m}; \sigma)$ vs $\log(\sigma)$ for $V=T$}
+    \label{fig:q4d_extra2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{q4d_extra1.jpg}
+    \caption{True PDF overlaid on the estimated PDF with $V=T$}
+    \label{fig:q4d_extra1}
+\end{figure}
 
 \end{document}
